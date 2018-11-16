@@ -1,8 +1,8 @@
-import * as Overcooked from "./js/mdp.es6";
+import * as OvercookedMDP from "./js/mdp.es6";
 
 if (typeof(window) === 'undefined') {
-    module.exports = Overcooked;
+    module.exports = {OvercookedMDP};
 }
 else {
-    window.Overcooked = Overcooked;
+    window.Overcooked = {OvercookedMDP};
 }

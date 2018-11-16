@@ -25,16 +25,16 @@ expect.extend({
 
 require("../overcook.js");
 //jest exposes a mock window object
-let Overcooked = window.Overcooked;
-let PlayerState = Overcooked.PlayerState;
-let ObjectState = Overcooked.ObjectState;
-let Direction = Overcooked.Direction;
-let Action = Overcooked.Action;
-let OvercookedGridworld = Overcooked.OvercookedGridworld;
-let OvercookedState = Overcooked.OvercookedState;
+let OvercookedMDP = window.Overcooked.OvercookedMDP;
+let PlayerState = OvercookedMDP.PlayerState;
+let ObjectState = OvercookedMDP.ObjectState;
+let Direction = OvercookedMDP.Direction;
+let Action = OvercookedMDP.Action;
+let OvercookedGridworld = OvercookedMDP.OvercookedGridworld;
+let OvercookedState = OvercookedMDP.OvercookedState;
 
 test("Test Start Positions", () => {
-    let ogw = Overcooked.OvercookedGridworld.from_grid([
+    let ogw = OvercookedMDP.OvercookedGridworld.from_grid([
         'XXPXX',
         'O  2O',
         'T1  T',
@@ -49,7 +49,7 @@ test("Test Transitions and Environment", () => {
     let [P, Obj] = [PlayerState, ObjectState];
     let delivery_reward = OvercookedGridworld.DELIVERY_REWARD;
 
-    let mdp = Overcooked.OvercookedGridworld.from_grid([
+    let mdp = OvercookedMDP.OvercookedGridworld.from_grid([
         'XXPXX',
         'O  2O',
         'T1  T',
