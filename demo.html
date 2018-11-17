@@ -6,9 +6,56 @@
     <script src="./overcook.js"></script>
 </head>
 <body>
+<div id="task"></div>
 
 <script>
+    let OvercookedGame = Overcooked.OvercookedGame.OvercookedGame;
+    let OvercookedMDP = Overcooked.OvercookedMDP;
+    let PlayerState = OvercookedMDP.PlayerState;
+    let ObjectState = OvercookedMDP.ObjectState;
+    let Direction = OvercookedMDP.Direction;
+    let Action = OvercookedMDP.Action;
+    let OvercookedGridworld = OvercookedMDP.OvercookedGridworld;
+    let OvercookedState = OvercookedMDP.OvercookedState;
 
+    let [n, s, e, w] = Direction.CARDINAL;
+    let [stay, interact] = [Direction.STAY, Action.INTERACT];
+    let [P, Obj] = [PlayerState, ObjectState];
+    let delivery_reward = OvercookedGridworld.DELIVERY_REWARD;
+
+    let game = new OvercookedGame({
+        start_grid: [
+            'XXPXX',
+            'O  2O',
+            'T1  T',
+            'XDPSX'
+        ],
+        container: "task"
+    });
+    game.init();
+
+    let atraj = [
+        [n,e], [w, interact], [interact, w], [e, n], [stay, interact], [e, e],
+        [n, interact], [interact, w], [w, w], [s, n], [interact, interact],
+        [e, s], [e, interact], [n, e], [interact, interact], [stay, stay],
+        [interact, interact],
+        [e, w], [e, s], [s, interact], [s, w], [interact, n], [e, interact],
+        [interact, s], [w, w], [n, interact], [interact, interact],
+        [s, interact], [interact, interact]
+    ];
+
+    let state = game.mdp.get_start_state();
+    for (let i = 0; i < atraj.length; i++) {
+        state = state.deepcopy();
+        setTimeout(((state) => {
+            return () => {
+                game.drawState(state)
+            }
+        })(state), 1000 + 550*i);
+        let joint_action = atraj[i];
+        [[state, _], _] =
+            game.mdp.get_transition_states_and_probs({state, joint_action});
+    }
 </script>
 </body>
 </html>

@@ -36,6 +36,12 @@ Direction.OPPOSITE_DIRECTIONS = _.fromPairs([
     [Direction.EAST, Direction.WEST],
     [Direction.WEST, Direction.EAST]
 ]);
+Direction.DIRECTION_TO_NAME = {
+    '0,-1': 'NORTH',
+    '0,1': 'SOUTH',
+    '1,0': 'EAST',
+    '-1,0': 'WEST'
+}
 
 export class Action {}
 Action.INTERACT = "INTERACT";
@@ -119,13 +125,13 @@ export class ObjectState {
     }
     is_valid () {
         if (this.name === 'onion') {
-            return typeof(state) === 'undefined'
+            return typeof(this.state) === 'undefined'
         }
         if (this.name === 'tomato') {
-            return typeof(state) === 'undefined'
+            return typeof(this.state) === 'undefined'
         }
         if (this.name === 'dish') {
-            return typeof(state) === 'undefined'
+            return typeof(this.state) === 'undefined'
         }
         if (this.name === 'soup') {
             let [soup_type, num_items, cook_time] = this.state;
@@ -150,7 +156,7 @@ export class OvercookedState {
     constructor ({
         players,
         objects,
-        order_list,
+        order_list = [],
         pot_explosion=false
     }) {
         // Represents a state in Overcooked.
@@ -238,12 +244,14 @@ export class OvercookedGridworld {
     constructor ({
         terrain,
         player_positions,
-        explosion_time=10
+        explosion_time=10,
+        COOK_TIME = OvercookedGridworld.COOK_TIME
     }) {
         this.terrain_mtx = terrain;
         this.terrain_pos_dict = this._get_terrain_type_pos_dict();
         this.start_player_positions = player_positions;
         this.explosion_time = explosion_time
+        this.COOK_TIME = COOK_TIME
     }
 
     get_start_state (order_list) {
@@ -345,7 +353,7 @@ export class OvercookedGridworld {
                         let obj = new_state.get_object(i_pos);
                         assert(obj.name === 'soup', "Object in pot was not soup");
                         let [temp, num_items, cook_time] = obj.state;
-                        if ((num_items === 3) && (cook_time >= OvercookedGridworld.COOK_TIME)) {
+                        if ((num_items === 3) && (cook_time >= this.COOK_TIME)) {
                             player.remove_object(); //turnt he dish into the soup
                             player.set_object(new_state.remove_object(i_pos));
                         }
@@ -379,7 +387,7 @@ export class OvercookedGridworld {
                         let [soup_type, num_items, cook_time] = obj.state;
                         assert(_.includes(ObjectState.SOUP_TYPES, soup_type));
                         assert(num_items === 3 &&
-                               cook_time >= OvercookedGridworld.COOK_TIME &&
+                               cook_time >= this.COOK_TIME &&
                                cook_time < this.explosion_time);
                         player.remove_object();
 
@@ -577,7 +585,6 @@ export class OvercookedGridworld {
             player_positions: player_pos
         })
     }
-
 }
 OvercookedGridworld.COOK_TIME = 5;
 OvercookedGridworld.DELIVERY_REWARD = 20;

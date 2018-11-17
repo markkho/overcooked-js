@@ -483,5 +483,4 @@ test("Test Transitions and Environment", () => {
         }),
         expected_reward: 0
     });
-    // console.log(traj);
 })

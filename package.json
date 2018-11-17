@@ -4,7 +4,8 @@
   "description": "Javascript app for overcook",
   "main": "index.js",
   "scripts": {
-    "test": "npm run build-debug; jest",
+    "test": "jest",
+    "build-test": "npm run build-debug; jest",
     "build-debug": "browserify index.js -o overcook.js -d -t babelify",
     "build": "browserify index.js -o overcook.js -t babelify",
     "loaddemo": "open http://localhost:8123; python2.7 -m SimpleHTTPServer 8123"
