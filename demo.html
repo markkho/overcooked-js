@@ -41,10 +41,15 @@
         [interact, interact],
         [e, w], [e, s], [s, interact], [s, w], [interact, n], [e, interact],
         [interact, s], [w, w], [n, interact], [interact, interact],
-        [s, interact], [interact, interact]
+        [s, interact], [interact, interact], [interact, stay], [e, e],
+        [interact, s], [stay, interact], [w, w], [s, stay], [interact, stay],
+        [n, stay], [s, stay], [stay, n], [stay, s], [n, stay],
+        [s, stay], [n, stay], [s, stay], [n, stay], [s, stay],
+        [stay, stay]
     ];
 
     let state = game.mdp.get_start_state();
+    state.order_list = ["onion"];
     for (let i = 0; i < atraj.length; i++) {
         state = state.deepcopy();
         setTimeout(((state) => {

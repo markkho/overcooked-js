@@ -250,7 +250,7 @@ export class OvercookedGridworld {
         this.terrain_mtx = terrain;
         this.terrain_pos_dict = this._get_terrain_type_pos_dict();
         this.start_player_positions = player_positions;
-        this.explosion_time = explosion_time
+        this.explosion_time = explosion_time;
         this.COOK_TIME = COOK_TIME
     }
 

@@ -150,6 +150,9 @@ export class OvercookedGame {
                             spriteframe =
                                 `soup-${souptype}-${n_ingredients}-cooking.png`;
                         }
+                        else if (cooktime >= this.mdp.explosion_time) {
+                            spriteframe = 'pot-explosion.png';
+                        }
                         else {
                             spriteframe = `soup-${souptype}-cooked.png`;
                         }
@@ -179,6 +182,24 @@ export class OvercookedGame {
                         }
                     }
                 }
+
+                //draw order list
+                let order_list = "Orders: "+state.order_list.join(", ");
+                if (typeof(sprites['order_list']) !== 'undefined') {
+                    sprites['order_list'].setText(order_list);
+                }
+                else {
+                    sprites['order_list'] = this.add.text(
+                        5, 5, order_list,
+                        {
+                            font: "20px Arial",
+                            fill: "yellow",
+                            align: "left"
+                        }
+                    )
+                }
+
+
             },
             update: function() {
                 let state;
