@@ -1,4 +1,4 @@
-# Overcook javascript app
+# Overcooked javascript app
 
 ## Demo
 Run:
