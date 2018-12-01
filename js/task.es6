@@ -13,13 +13,15 @@ export class OvercookedGame {
         gameWidth = tileSize*start_grid[0].length,
         gameHeight = tileSize*start_grid.length,
 
-        ANIMATION_DURATION = 500
+        ANIMATION_DURATION = 500,
+        TIMESTEP_DURATION = 600
     }){
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
         this.container_id = container_id;
         this.mdp = OvercookedMDP.OvercookedGridworld.from_grid(start_grid);
         this.state = this.mdp.get_start_state();
+        this.joint_action = [OvercookedMDP.Direction.STAY, OvercookedMDP.Direction.STAY];
 
         let gameparent = this;
         this.scene = new Phaser.Class({
@@ -132,7 +134,9 @@ export class OvercookedGame {
                     for (let objpos in sprites.objects) {
                         let {objsprite, timesprite} = sprites.objects[objpos];
                         objsprite.destroy();
-                        timesprite.destroy();
+                        if (typeof(timesprite) !== 'undefined') {
+                            timesprite.destroy();
+                        }
                     }
                 }
                 sprites['objects'] = {};
@@ -141,9 +145,10 @@ export class OvercookedGame {
                     if (!state.objects.hasOwnProperty(objpos)) { continue }
                     let obj = state.objects[objpos];
                     let [x, y] = obj.position;
+                    let terrain_type = this.mdp.get_terrain_type_at(obj.position);
                     let spriteframe, souptype, n_ingredients;
                     let cooktime = "";
-                    if (obj.name === 'soup') {
+                    if ((obj.name === 'soup') && (terrain_type === 'P')) {
                         [souptype, n_ingredients, cooktime] = obj.state;
 
                         if (cooktime <= this.mdp.COOK_TIME) {
@@ -181,6 +186,41 @@ export class OvercookedGame {
                             objsprite, timesprite
                         }
                     }
+                    else if (obj.name === 'soup') {
+                        [souptype, n_ingredients, cooktime] = obj.state;
+                        spriteframe = `soup-${souptype}-dish.png`;
+                        let objsprite = this.add.sprite(
+                            tileSize*x,
+                            tileSize*y,
+                            "objects",
+                            spriteframe
+                        );
+                        objsprite.setDisplaySize(tileSize, tileSize);
+                        objsprite.depth = 1;
+                        objsprite.setOrigin(0);
+                        sprites['objects'][objpos] = {objsprite};
+                    }
+                    else {
+                        if (obj.name === 'onion') {
+                            spriteframe = "onion.png";
+                        }
+                        else if (obj.name === 'tomato') {
+                            spriteframe = "tomato.png";
+                        }
+                        else if (obj.name === 'dish') {
+                            spriteframe = "dish.png";
+                        }
+                        let objsprite = this.add.sprite(
+                            tileSize*x,
+                            tileSize*y,
+                            "objects",
+                            spriteframe
+                        );
+                        objsprite.setDisplaySize(tileSize, tileSize);
+                        objsprite.depth = 1;
+                        objsprite.setOrigin(0);
+                        sprites['objects'][objpos] = {objsprite};
+                    }
                 }
 
                 //draw order list
@@ -212,10 +252,7 @@ export class OvercookedGame {
                 if (!redraw) {
                     return
                 }
-
                 this.drawState(state, this.sprites);
-
-
             }
         });
     }
@@ -234,6 +271,10 @@ export class OvercookedGame {
 
     drawState(state) {
         this.state_to_draw = state;
+    }
+
+    setAction(player_index, action) {
+
     }
 
     close () {

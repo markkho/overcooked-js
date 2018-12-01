@@ -332,7 +332,7 @@ export class OvercookedGridworld {
                 if (player.has_object() && !new_state.has_object(i_pos)) {
                     new_state.add_object(player.remove_object(), i_pos);
                 }
-                else if (player.has_object() && new_state.has_object(i_pos)) {
+                else if (!player.has_object() && new_state.has_object(i_pos)) {
                     player.set_object(new_state.remove_object(i_pos));
                 }
             }

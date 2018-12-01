@@ -35,6 +35,7 @@
     game.init();
 
     let atraj = [
+        //make two soups and watch them blow up
         [n,e], [w, interact], [interact, w], [e, n], [stay, interact], [e, e],
         [n, interact], [interact, w], [w, w], [s, n], [interact, interact],
         [e, s], [e, interact], [n, e], [interact, interact], [stay, stay],
@@ -45,19 +46,39 @@
         [interact, s], [stay, interact], [w, w], [s, stay], [interact, stay],
         [n, stay], [s, stay], [stay, n], [stay, s], [n, stay],
         [s, stay], [n, stay], [s, stay], [n, stay], [s, stay],
+        [stay, stay],
+
+        //pick up things and put them on tables
+        [stay, interact], [stay, n], [stay, interact],
+        [stay, w], [stay, interact], [stay, e], [stay, e],
+        [stay, n], [stay, interact], [stay, interact],
+        [stay, w], [stay, n], [stay, interact],
+        [stay, e], [stay, interact], [stay, w], [stay, n],
+        [stay, interact],
+        [stay, w], [stay, n], [stay, interact], [stay, e],
+        [stay, n], [stay, stay], [stay, interact],
+        [stay, e], [stay, n], [stay, interact],
+        [stay, stay],
+
         [stay, stay]
     ];
 
     let state = game.mdp.get_start_state();
     state.order_list = ["onion"];
+    let start_i = 0;
     for (let i = 0; i < atraj.length; i++) {
         state = state.deepcopy();
-        setTimeout(((state) => {
-            return () => {
-                game.drawState(state)
-            }
-        })(state), 1000 + 550*i);
         let joint_action = atraj[i];
+        if (i > start_i) {
+            setTimeout(((state, joint_action) => {
+                return () => {
+                    console.log(state);
+                    console.log(joint_action);
+                    console.log("");
+                    game.drawState(state);
+                }
+            })(state, joint_action), 1000 + 550 * (i - start_i));
+        }
         [[state, _], _] =
             game.mdp.get_transition_states_and_probs({state, joint_action});
     }
