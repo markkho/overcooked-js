@@ -14,7 +14,8 @@ export class OvercookedGame {
         gameHeight = tileSize*start_grid.length,
 
         ANIMATION_DURATION = 500,
-        TIMESTEP_DURATION = 600
+        TIMESTEP_DURATION = 600,
+        player_colors = {0: 'green', 1: 'blue'}
     }){
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
@@ -22,6 +23,7 @@ export class OvercookedGame {
         this.mdp = OvercookedMDP.OvercookedGridworld.from_grid(start_grid);
         this.state = this.mdp.get_start_state();
         this.joint_action = [OvercookedMDP.Direction.STAY, OvercookedMDP.Direction.STAY];
+        this.player_colors = player_colors;
 
         let gameparent = this;
         this.scene = new Phaser.Class({
@@ -110,13 +112,24 @@ export class OvercookedGame {
                         chefsprite.setDisplaySize(tileSize, tileSize);
                         chefsprite.depth = 1;
                         chefsprite.setOrigin(0);
-                        sprites['chefs'][pi] = chefsprite;
+                        let hatsprite = this.add.sprite(
+                            tileSize*x,
+                            tileSize*y,
+                            "chefs",
+                            `${dir}-${this.gameparent.player_colors[pi]}hat.png`
+                        );
+                        hatsprite.setDisplaySize(tileSize, tileSize);
+                        hatsprite.depth = 2;
+                        hatsprite.setOrigin(0);
+                        sprites['chefs'][pi] = {chefsprite, hatsprite};
                     }
                     else {
-                        let chefsprite = sprites['chefs'][pi];
+                        let chefsprite = sprites['chefs'][pi]['chefsprite'];
+                        let hatsprite = sprites['chefs'][pi]['hatsprite'];
                         chefsprite.setFrame(`${dir}${held_obj}.png`);
+                        hatsprite.setFrame(`${dir}-${this.gameparent.player_colors[pi]}hat.png`);
                         this.tweens.add({
-                            targets: chefsprite,
+                            targets: [chefsprite, hatsprite],
                             x: tileSize*x,
                             y: tileSize*y,
                             duration: ANIMATION_DURATION,
