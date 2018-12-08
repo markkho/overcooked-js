@@ -15,7 +15,8 @@ export class OvercookedGame {
 
         ANIMATION_DURATION = 500,
         TIMESTEP_DURATION = 600,
-        player_colors = {0: 'green', 1: 'blue'}
+        player_colors = {0: 'green', 1: 'blue'},
+        assets_loc = "./assets/"
     }){
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
@@ -24,30 +25,32 @@ export class OvercookedGame {
         this.state = this.mdp.get_start_state();
         this.joint_action = [OvercookedMDP.Direction.STAY, OvercookedMDP.Direction.STAY];
         this.player_colors = player_colors;
+        this.assets_loc = assets_loc;
 
         let gameparent = this;
         this.scene = new Phaser.Class({
+            gameparent,
             Extends: Phaser.Scene,
             initialize: function() {
                 Phaser.Scene.call(this, {key: "PlayGame"})
             },
             preload: function () {
                 this.load.atlas("tiles",
-                    "assets/terrain.png",
-                    "assets/terrain.json");
+                    this.gameparent.assets_loc+"terrain.png",
+                    this.gameparent.assets_loc+"terrain.json");
                 this.load.atlas("chefs",
-                    "assets/chefs.png",
-                    "assets/chefs.json");
+                    this.gameparent.assets_loc+"chefs.png",
+                    this.gameparent.assets_loc+"chefs.json");
                 this.load.atlas("objects",
-                    "assets/objects.png",
-                    "assets/objects.json");
+                    this.gameparent.assets_loc+"objects.png",
+                    this.gameparent.assets_loc+"objects.json");
             },
             create: function () {
-                this.gameparent = gameparent;
+                // this.gameparent = gameparent;
                 this.mdp = gameparent.mdp;
                 this.sprites = {};
                 this.drawLevel();
-                this.drawState(gameparent.state, this.sprites);
+                this._drawState(gameparent.state, this.sprites);
                 this.cursors = this.input.keyboard.createCursorKeys();
                 // this.player.can_take_input = true;
                 // this.animating_transition = false;
@@ -56,7 +59,7 @@ export class OvercookedGame {
                 //draw tiles
                 let terrain_to_img = {
                     ' ': 'floor.png',
-                    'X': 'table.png',
+                    'X': 'counter.png',
                     'P': 'pot.png',
                     'O': 'onions.png',
                     'T': 'tomatoes.png',
@@ -80,7 +83,7 @@ export class OvercookedGame {
                 }
 
             },
-            drawState: function (state, sprites) {
+            _drawState: function (state, sprites) {
                 sprites = typeof(sprites) === 'undefined' ? {} : sprites;
 
                 //draw chefs
@@ -251,8 +254,6 @@ export class OvercookedGame {
                         }
                     )
                 }
-
-
             },
             update: function() {
                 let state;
@@ -265,7 +266,7 @@ export class OvercookedGame {
                 if (!redraw) {
                     return
                 }
-                this.drawState(state, this.sprites);
+                this._drawState(state, this.sprites);
             }
         });
     }
