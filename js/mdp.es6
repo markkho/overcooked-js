@@ -256,14 +256,16 @@ export class OvercookedGridworld {
     constructor ({
         terrain,
         player_positions,
-        explosion_time=10,
-        COOK_TIME = OvercookedGridworld.COOK_TIME
+        explosion_time=Number.MAX_SAFE_INTEGER,
+        COOK_TIME = OvercookedGridworld.COOK_TIME,
+        DELIVERY_REWARD = OvercookedGridworld.DELIVERY_REWARD
     }) {
         this.terrain_mtx = terrain;
         this.terrain_pos_dict = this._get_terrain_type_pos_dict();
         this.start_player_positions = player_positions;
         this.explosion_time = explosion_time;
         this.COOK_TIME = COOK_TIME
+        this.DELIVERY_REWARD = DELIVERY_REWARD
     }
 
     get_start_state (order_list) {
@@ -407,7 +409,7 @@ export class OvercookedGridworld {
                         let current_order = new_state.order_list[0];
                         if ((current_order === 'any') || (soup_type === current_order)) {
                             new_state.order_list = new_state.order_list.slice(1);
-                            reward += OvercookedGridworld.DELIVERY_REWARD;
+                            reward += this.DELIVERY_REWARD;
                         }
                     }
                 }
@@ -578,7 +580,7 @@ export class OvercookedGridworld {
         }
     }
 
-    static from_grid (grid) {
+    static from_grid (grid, params) {
         grid = grid.map((r) => _.map(r, (c) => c));
         let player_pos = [null, null];
         for (let y = 0; y < grid.length; y++) {
@@ -592,10 +594,12 @@ export class OvercookedGridworld {
             }
         }
         assert(_.every(player_pos), 'A player was missing');
-        return new OvercookedGridworld({
+        params = typeof(params) === 'undefined' ? {} : params;
+        params = Object.assign({}, params, {
             terrain: grid,
             player_positions: player_pos
-        })
+        });
+        return new OvercookedGridworld(params)
     }
 }
 OvercookedGridworld.COOK_TIME = 5;

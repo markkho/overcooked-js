@@ -16,16 +16,23 @@ export class OvercookedGame {
         ANIMATION_DURATION = 500,
         TIMESTEP_DURATION = 600,
         player_colors = {0: 'green', 1: 'blue'},
-        assets_loc = "./assets/"
+        assets_loc = "./assets/",
+        show_post_cook_time = false,
+
+        COOK_TIME = 2,
+        explosion_time = Number.MAX_SAFE_INTEGER,
+        DELIVERY_REWARD = OvercookedMDP.OvercookedGridworld.DELIVERY_REWARD
     }){
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
         this.container_id = container_id;
-        this.mdp = OvercookedMDP.OvercookedGridworld.from_grid(start_grid);
+        let params = {COOK_TIME, explosion_time, DELIVERY_REWARD};
+        this.mdp = OvercookedMDP.OvercookedGridworld.from_grid(start_grid, params);
         this.state = this.mdp.get_start_state();
         this.joint_action = [OvercookedMDP.Direction.STAY, OvercookedMDP.Direction.STAY];
         this.player_colors = player_colors;
         this.assets_loc = assets_loc;
+        this.show_post_cook_time = show_post_cook_time;
 
         let gameparent = this;
         this.scene = new Phaser.Class({
@@ -167,6 +174,7 @@ export class OvercookedGame {
                     if ((obj.name === 'soup') && (terrain_type === 'P')) {
                         [souptype, n_ingredients, cooktime] = obj.state;
 
+                        // select pot sprite
                         if (cooktime <= this.mdp.COOK_TIME) {
                             spriteframe =
                                 `soup-${souptype}-${n_ingredients}-cooking.png`;
@@ -186,21 +194,29 @@ export class OvercookedGame {
                         objsprite.setDisplaySize(tileSize, tileSize);
                         objsprite.depth = 1;
                         objsprite.setOrigin(0);
-                        let timesprite =  this.add.text(
-                            tileSize*(x+.5),
-                            tileSize*(y+.6),
-                            String(cooktime),
-                            {
-                                font: "25px Arial",
-                                fill: "red",
-                                align: "center",
-                            }
-                        );
-                        timesprite.depth = 2;
+                        let objs_here = {objsprite};
 
-                        sprites['objects'][objpos] = {
-                            objsprite, timesprite
+                        // show time accordingly
+                        let show_time = true;
+                        if ((cooktime > this.mdp.COOK_TIME) && !this.show_post_cook_time) {
+                            show_time = false;
                         }
+                        if (show_time) {
+                            let timesprite =  this.add.text(
+                                tileSize*(x+.5),
+                                tileSize*(y+.6),
+                                String(cooktime),
+                                {
+                                    font: "25px Arial",
+                                    fill: "red",
+                                    align: "center",
+                                }
+                            );
+                            timesprite.depth = 2;
+                            objs_here['timesprite'] = timesprite;
+                        }
+
+                        sprites['objects'][objpos] = objs_here
                     }
                     else if (obj.name === 'soup') {
                         [souptype, n_ingredients, cooktime] = obj.state;
@@ -255,18 +271,61 @@ export class OvercookedGame {
                     )
                 }
             },
+            _drawScore: function(score, sprites) {
+                score = "Score: "+score;
+                if (typeof(sprites['score']) !== 'undefined') {
+                    sprites['score'].setText(score);
+                }
+                else {
+                    sprites['score'] = this.add.text(
+                        5, 25, score,
+                        {
+                            font: "20px Arial",
+                            fill: "yellow",
+                            align: "left"
+                        }
+                    )
+                }
+            },
+            _drawTimeLeft: function(time_left, sprites) {
+                time_left = "Time Left: "+time_left;
+                if (typeof(sprites['time_left']) !== 'undefined') {
+                    sprites['time_left'].setText(time_left);
+                }
+                else {
+                    sprites['time_left'] = this.add.text(
+                        5, 45, time_left,
+                        {
+                            font: "20px Arial",
+                            fill: "yellow",
+                            align: "left"
+                        }
+                    )
+                }
+            },
             update: function() {
-                let state;
-                let redraw = false;
+                // let state, score_;
+                // let redraw = false;
                 if (typeof(this.gameparent.state_to_draw) !== 'undefined') {
-                    state = this.gameparent.state_to_draw;
+                    let state = this.gameparent.state_to_draw;
                     delete this.gameparent.state_to_draw;
-                    redraw = true;
+                    // redraw = true;
+                    this._drawState(state, this.sprites);
                 }
-                if (!redraw) {
-                    return
+                if (typeof(this.gameparent.score_to_draw) !== 'undefined') {
+                    let score = this.gameparent.score_to_draw;
+                    delete this.gameparent.score_to_draw;
+                    this._drawScore(score, this.sprites);
                 }
-                this._drawState(state, this.sprites);
+                if (typeof(this.gameparent.time_left) !== 'undefined') {
+                    let time_left = this.gameparent.time_left;
+                    delete this.gameparent.time_left;
+                    this._drawTimeLeft(time_left, this.sprites);
+                }
+                // if (!redraw) {
+                //     return
+                // }
+
             }
         });
     }
@@ -291,7 +350,18 @@ export class OvercookedGame {
 
     }
 
+    drawScore(score) {
+        this.score_to_draw = String(score);
+    }
+
+    drawTimeLeft(time_left) {
+        this.time_left = String(time_left);
+    }
+
     close () {
+        this.game.renderer.destroy();
+        this.game.loop.stop();
+        this.game.canvas.remove();
         this.game.destroy();
     }
 
