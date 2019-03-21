@@ -10,3 +10,6 @@ Or if you have npm installed:
 ```
 $ npm run loaddemo
 ```
+
+## Sprites
+[Texture packer online](https://www.codeandweb.com/tp-online/index.html?layout=horizontal&show-settings=false)
