@@ -358,10 +358,10 @@ export class OvercookedGame {
         this.time_left = String(time_left);
     }
 
-    close () {
+    close (msg) {
         this.game.renderer.destroy();
         this.game.loop.stop();
-        this.game.canvas.remove();
+        // this.game.canvas.remove();
         this.game.destroy();
     }
 
