@@ -179,6 +179,18 @@ export class OvercookedState {
         this.pot_explosion = pot_explosion;
     }
 
+    static from_object(obj) {
+        obj['players'] = obj['players'].map((p) => {
+            if (typeof(p.held_object) !== 'undefined') {
+                p.held_object = new ObjectState(p.held_object);
+            }
+            return p
+        });
+        obj['players'] = obj['players'].map((p) => {return new PlayerState(p)});
+        obj['objects'] = _.mapValues(obj['objects'], (o) => {return new ObjectState(o)});
+        return new OvercookedState(obj);
+    }
+
     player_positions () {
         return this.players.map((p) => {return p.position})
     }
