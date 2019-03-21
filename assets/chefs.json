@@ -700,7 +700,7 @@
 				"h": 15
 			}
 		},
-		"WEST-greenhat.png": {
+		"WEST-dish.png": {
 			"frame": {
 				"x": 86,
 				"y": 86,
@@ -720,7 +720,7 @@
 				"h": 15
 			}
 		},
-		"WEST-onion.png": {
+		"WEST-greenhat.png": {
 			"frame": {
 				"x": 103,
 				"y": 1,
@@ -740,7 +740,7 @@
 				"h": 15
 			}
 		},
-		"WEST-orangehat.png": {
+		"WEST-onion.png": {
 			"frame": {
 				"x": 103,
 				"y": 18,
@@ -760,7 +760,7 @@
 				"h": 15
 			}
 		},
-		"WEST-purplehat.png": {
+		"WEST-orangehat.png": {
 			"frame": {
 				"x": 103,
 				"y": 35,
@@ -780,7 +780,7 @@
 				"h": 15
 			}
 		},
-		"WEST-redhat.png": {
+		"WEST-purplehat.png": {
 			"frame": {
 				"x": 103,
 				"y": 52,
@@ -800,7 +800,7 @@
 				"h": 15
 			}
 		},
-		"WEST-soup-onion.png": {
+		"WEST-redhat.png": {
 			"frame": {
 				"x": 103,
 				"y": 69,
@@ -820,7 +820,7 @@
 				"h": 15
 			}
 		},
-		"WEST-soup-tomato.png": {
+		"WEST-soup-onion.png": {
 			"frame": {
 				"x": 103,
 				"y": 86,
@@ -840,9 +840,29 @@
 				"h": 15
 			}
 		},
-		"WEST-tomato.png": {
+		"WEST-soup-tomato.png": {
 			"frame": {
 				"x": 1,
+				"y": 103,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"WEST-tomato.png": {
+			"frame": {
+				"x": 18,
 				"y": 103,
 				"w": 15,
 				"h": 15
