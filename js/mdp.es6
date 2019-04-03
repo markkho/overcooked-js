@@ -84,7 +84,7 @@ export class PlayerState {
     remove_object () {
         assert(this.has_object());
         let obj = this.held_object;
-        delete this.held_object;
+        this.held_object = undefined;
         return obj
     }
     update_pos_and_or (new_position, new_orientation) {
@@ -258,7 +258,8 @@ export class OvercookedGridworld {
         player_positions,
         explosion_time=Number.MAX_SAFE_INTEGER,
         COOK_TIME = OvercookedGridworld.COOK_TIME,
-        DELIVERY_REWARD = OvercookedGridworld.DELIVERY_REWARD
+        DELIVERY_REWARD = OvercookedGridworld.DELIVERY_REWARD,
+        always_serve = false //when this is set to a string, its what's always served
     }) {
         this.terrain_mtx = terrain;
         this.terrain_pos_dict = this._get_terrain_type_pos_dict();
@@ -266,9 +267,13 @@ export class OvercookedGridworld {
         this.explosion_time = explosion_time;
         this.COOK_TIME = COOK_TIME
         this.DELIVERY_REWARD = DELIVERY_REWARD
+        this.always_serve = always_serve;
     }
 
     get_start_state (order_list) {
+        if (this.always_serve) {
+            order_list = [this.always_serve]
+        }
         return OvercookedState.from_player_positions(
             this.start_player_positions,
             order_list
@@ -410,6 +415,9 @@ export class OvercookedGridworld {
                         if ((current_order === 'any') || (soup_type === current_order)) {
                             new_state.order_list = new_state.order_list.slice(1);
                             reward += this.DELIVERY_REWARD;
+                        }
+                        if (this.always_serve) {
+                            new_state.order_list = [this.always_serve, ]
                         }
                     }
                 }
