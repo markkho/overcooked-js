@@ -21,12 +21,13 @@ export class OvercookedGame {
 
         COOK_TIME = 2,
         explosion_time = Number.MAX_SAFE_INTEGER,
-        DELIVERY_REWARD = OvercookedMDP.OvercookedGridworld.DELIVERY_REWARD
+        DELIVERY_REWARD = OvercookedMDP.OvercookedGridworld.DELIVERY_REWARD,
+        always_serve = false
     }){
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
         this.container_id = container_id;
-        let params = {COOK_TIME, explosion_time, DELIVERY_REWARD};
+        let params = {COOK_TIME, explosion_time, DELIVERY_REWARD, always_serve};
         this.mdp = OvercookedMDP.OvercookedGridworld.from_grid(start_grid, params);
         this.state = this.mdp.get_start_state();
         this.joint_action = [OvercookedMDP.Direction.STAY, OvercookedMDP.Direction.STAY];
@@ -58,7 +59,7 @@ export class OvercookedGame {
                 this.sprites = {};
                 this.drawLevel();
                 this._drawState(gameparent.state, this.sprites);
-                this.cursors = this.input.keyboard.createCursorKeys();
+                // this.cursors = this.input.keyboard.createCursorKeys(); //this messes with the keys a lot
                 // this.player.can_take_input = true;
                 // this.animating_transition = false;
             },
