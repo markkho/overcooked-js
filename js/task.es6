@@ -338,7 +338,10 @@ export class OvercookedGame {
             height: this.gameHeight,
             scene: [this.scene],
             parent: this.container_id,
-            pixelArt: true
+            pixelArt: true,
+            audio: {
+                noAudio: true
+            }
         };
         this.game = new Phaser.Game(gameConfig);
     }
