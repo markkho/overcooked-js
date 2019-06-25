@@ -1,5 +1,9 @@
 import _ from 'lodash';
 
+// HTMLCanvasElement.prototype.getContext = () => {
+//     // return whatever getContext has to return
+// };
+
 expect.extend({
   toEqualState(received, expected) {
     let pass = _.isEqual(
@@ -23,7 +27,7 @@ expect.extend({
     }
 });
 
-require("../overcook.js");
+require("../overcooked-window.js");
 //jest exposes a mock window object
 let OvercookedMDP = window.Overcooked.OvercookedMDP;
 let PlayerState = OvercookedMDP.PlayerState;

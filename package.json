@@ -6,9 +6,9 @@
   "scripts": {
     "test": "jest",
     "build-test": "npm run build-debug; jest",
-    "build-debug": "browserify index.js -o overcooked.js -d -t babelify",
+    "build-window": "browserify index-window.js -o overcooked-window.js -t babelify",
     "build": "browserify index.js -o overcooked.js -t babelify",
-    "loaddemo": "open http://localhost:8123/demo.html; python2.7 -m SimpleHTTPServer 8123"
+    "demo": "open http://localhost:8123/demo.html; python2.7 -m SimpleHTTPServer 8123"
   },
   "author": "Mark Ho (mark.ho.cs@gmail.com)",
   "license": "ISC",
@@ -21,9 +21,16 @@
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "babelify": "^8.0.0",
-    "jest": "^23.6.0"
+    "canvas": "^2.5.0",
+    "jest": "^23.6.0",
+    "jest-canvas-mock": "^2.1.0"
   },
   "browserify": {
-    "transform": ["babelify"]
+    "transform": [
+      "babelify"
+    ]
+  },
+  "jest": {
+    "setupFiles": ["jest-canvas-mock"]
   }
 }
